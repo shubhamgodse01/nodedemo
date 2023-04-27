@@ -25,28 +25,23 @@ app.use(cors(
 app.use(urlencoded({
     extended: true
 }))
-app.use(json())
-
+app.use(json())  //this will return respons as json
 app.use(newPostRouter)
 app.use(deletePostRouter)
 app.use(updatePostRouter)
 app.use(showPostRouter)
-
 app.use(newCommentRouter)
 app.use(deleteCommentRouter)
-
 app.all('*', (req, res, next) => {
     const error = new Error('Not found!') as CustomError;
     error.status = 404
     next(error)
 })
-
 declare global {
     interface CustomError extends Error {
         status?: number
     }
 }
-
 app.use((error: CustomError, req: Request, res: Response, next: NextFunction) => {
     if(error.status){
         return res.status(error.status).json({message: error.message});
